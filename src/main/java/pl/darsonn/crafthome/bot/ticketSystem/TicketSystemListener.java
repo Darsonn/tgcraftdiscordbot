@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.restaction.ChannelAction;
+import pl.darsonn.crafthome.bot.Utils;
 import pl.darsonn.crafthome.bot.database.DatabaseOperations;
 import pl.darsonn.crafthome.bot.embedMessagesGenerator.EmbedMessageGenerator;
 
@@ -27,7 +28,7 @@ public class TicketSystemListener extends ListenerAdapter {
     }
 
     public void createTicket(ButtonInteractionEvent event) {
-        Category category = Objects.requireNonNull(event.getGuild()).getCategoryById("1176178980206948412");
+        Category category = Objects.requireNonNull(event.getGuild()).getCategoryById(Utils.TicketUtils.getCategoryID());
         String textChannel = "ticket-"+ Objects.requireNonNull(event.getMember()).getEffectiveName();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
