@@ -2,7 +2,6 @@ package pl.darsonn.crafthome.bot.giveaways;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -17,7 +16,6 @@ import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
 import org.jetbrains.annotations.NotNull;
 import pl.darsonn.crafthome.bot.DiscordBot;
-import pl.darsonn.crafthome.bot.database.DatabaseOperations;
 import pl.darsonn.crafthome.bot.embedMessagesGenerator.EmbedMessageGenerator;
 
 import java.awt.*;
@@ -34,7 +32,7 @@ public class GiveawaySystemListener extends ListenerAdapter {
 
     public static final String giveawaysChannelID = "1195704767536705636";
     private static final EmbedMessageGenerator embedMessageGenerator = new EmbedMessageGenerator();
-    private static final DatabaseOperations databaseOperations = new DatabaseOperations();
+    private static final GiveawayDatabaseOperations databaseOperations = new GiveawayDatabaseOperations();
 
     public static void checkForActiveGiveaways() {
         List<Giveaway> giveaways = databaseOperations.getGivewaysList();
@@ -52,7 +50,11 @@ public class GiveawaySystemListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         if(event.getName().equals("giveaways")) {
-            showGiveawaysOptions(event);
+            if(event.getMember().getId().equals("951563322300444742")) {    //TODO CHANGE AFTER FIX
+                showGiveawaysOptions(event);
+            } else {
+                event.reply("Przepraszamy, ale ten element nie został jeszcze ukończony!").setEphemeral(true).queue();
+            }
         }
     }
 
