@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class GiveawayWinnerPicker {
     private static final Random random = new Random();
-    private static final DatabaseOperations databaseOperations = new DatabaseOperations();
+    private static final GiveawayDatabaseOperations databaseOperations = new GiveawayDatabaseOperations();
     public static String chooseOneWinner(int id) {
         String winner = databaseOperations.getMemberIDByIDFromGiveawayTable(
                 id,
