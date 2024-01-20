@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 public class DatabaseOperations {
     private Connection connection;
     private Statement statement;
+    private static final Logger logger = Logger.getLogger(DatabaseOperations.class.getName());
 
     public DatabaseOperations() {
         String request = "jdbc:mysql://localhost:3306/crafthomebot?useUnicode=true&characterEncoding=utf8";
@@ -21,9 +22,9 @@ public class DatabaseOperations {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(request, "root", "merkUUry1005");
+            logger.log(Level.FINE, "Połączenie z bazą danych jest poprawne");
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(DatabaseOperations.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("Błąd z połączeniem z bazą danych.");
+            logger.log(Level.SEVERE, null, ex);
             System.exit(101);
         }
     }
@@ -33,23 +34,18 @@ public class DatabaseOperations {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(request, "root", "merkUUry1005");
-            System.out.println("Połączenie z bazą danych jest poprawne");
+            logger.log(Level.FINE, "Połączenie z bazą danych jest poprawne");
             return connection;
 
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(DatabaseOperations.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("Błąd z połączeniem z bazą danych.");
+            logger.log(Level.SEVERE, null, ex);
             System.exit(101);
             return null;
         }
     }
 
-    public void closeConnection() {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void logError(SQLException e) {
+        logger.log(Level.WARNING, "Błąd podczas manipulacji danymi w bazie danych", e);
     }
 
     public void createTicket(Member member, String type, TextChannel channel, Timestamp timeOfOpeningTicket) {
@@ -66,8 +62,7 @@ public class DatabaseOperations {
             statement.setString(9, channel.getId());
             statement.execute();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas wprowadzania nowego ticketa do bazy danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -87,8 +82,7 @@ public class DatabaseOperations {
             }
             return ticketCreateDate;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu daty utworzenia ticketa z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return null;
         }
     }
@@ -104,8 +98,7 @@ public class DatabaseOperations {
             }
             return ticketOpener;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu właściciela ticketa z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return null;
         }
     }
@@ -116,8 +109,7 @@ public class DatabaseOperations {
             statement.setString(1, ticketCloserID);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas edytowania ticketa po zamknięciu w bazie danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -127,8 +119,7 @@ public class DatabaseOperations {
             statement.setTimestamp(1, timestamp);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas edytowania ticketa po zamknięciu w bazie danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -138,8 +129,7 @@ public class DatabaseOperations {
             statement.setInt(1, 0);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas czyszczenia z zamkniętych ticketów bazę danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -153,8 +143,7 @@ public class DatabaseOperations {
             statement.setString(5, messageID);
             statement.execute();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas wprowadzania nowej aplikacji do bazy danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -169,8 +158,7 @@ public class DatabaseOperations {
             }
             return ticketOpener;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu właściciela ticketa z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return null;
         }
     }
@@ -181,24 +169,7 @@ public class DatabaseOperations {
             statement.setString(1, applicantID);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas usuwania aplikacji z bazy danych");
-            e.printStackTrace();
-        }
-    }
-    public String getDiscordIDFromUID(String uid) {
-        String request = "SELECT * FROM `discordsrv_accounts` WHERE `uuid` = '" + uid + "'";
-        String ticketOpener = null;
-        try {
-            statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(request);
-            while (rs.next()) {
-                ticketOpener = rs.getString("discord");
-            }
-            return ticketOpener;
-        } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu właściciela ticketa z bazy danych");
-            e.printStackTrace();
-            return null;
+            logError(e);
         }
     }
 
@@ -213,8 +184,7 @@ public class DatabaseOperations {
             }
             return id;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu danych z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return null;
         }
     }
@@ -225,8 +195,7 @@ public class DatabaseOperations {
             statement.setString(1, discordID);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas edytowania ticketa po zamknięciu w bazie danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -241,8 +210,7 @@ public class DatabaseOperations {
             }
             return number;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu właściciela ticketa z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return -1;
         }
     }
@@ -258,8 +226,7 @@ public class DatabaseOperations {
             }
             return ticketOpener;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu właściciela ticketa z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return null;
         }
     }
@@ -270,8 +237,7 @@ public class DatabaseOperations {
             statement.setInt(1, number);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas edytowania ticketa po zamknięciu w bazie danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -281,8 +247,7 @@ public class DatabaseOperations {
             statement.setString(1, discordID);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas edytowania ticketa po zamknięciu w bazie danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -305,8 +270,7 @@ public class DatabaseOperations {
                 giveawaysList.add(giveaway);
             }
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu listy konkursów z bazy danych");
-            e.printStackTrace();
+            logError(e);
         }
 
         return giveawaysList;
@@ -329,8 +293,7 @@ public class DatabaseOperations {
                 return new Giveaway(id, name, creatorID, localDateTime, winners);
             }
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu listy konkursów z bazy danych");
-            e.printStackTrace();
+            logError(e);
         }
         return null;
     }
@@ -345,8 +308,7 @@ public class DatabaseOperations {
             statement.setInt(5, winners);
             statement.execute();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas wprowadzania nowego konkursu do bazy danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -361,8 +323,7 @@ public class DatabaseOperations {
             }
             return id;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu danych z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return null;
         }
     }
@@ -372,8 +333,7 @@ public class DatabaseOperations {
         try (final var statement = connection.prepareStatement(request)) {
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas edytowania ticketa po zamknięciu w bazie danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -383,8 +343,7 @@ public class DatabaseOperations {
             statement.setInt(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas usuwania aplikacji z bazy danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -395,8 +354,7 @@ public class DatabaseOperations {
             statement.setString(2, creatorID);
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas edytowania ticketa po zamknięciu w bazie danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -405,8 +363,7 @@ public class DatabaseOperations {
         try (final var statement = connection.prepareStatement(request)) {
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas usuwania konkursowej tabeli z bazy danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -421,8 +378,7 @@ public class DatabaseOperations {
             }
             return amount;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu danych z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return -1;
         }
     }
@@ -438,8 +394,7 @@ public class DatabaseOperations {
             }
             return memberID;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu danych z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return null;
         }
     }
@@ -452,13 +407,12 @@ public class DatabaseOperations {
 
             if (rs.next()) {
                 int rowCount = rs.getInt("count");
-                return rowCount > 0; // Jeśli rowCount > 0, oznacza to, że memberID istnieje w tabeli
+                return rowCount > 0;
             }
 
             return false;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu danych z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return false;
         }
     }
@@ -471,8 +425,7 @@ public class DatabaseOperations {
             statement.setString(2, memberID);
             statement.execute();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas wprowadzania nowego konkursu do bazy danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -487,8 +440,7 @@ public class DatabaseOperations {
             }
             return messageID;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu danych z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return null;
         }
     }
@@ -504,8 +456,7 @@ public class DatabaseOperations {
             statement.setInt(3, 0);
             statement.execute();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas wprowadzania wielu użytkowników do bazy danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -520,8 +471,7 @@ public class DatabaseOperations {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu danych z bazy danych");
-            e.printStackTrace();
+            logError(e);
         }
         return false;
     }
@@ -537,8 +487,7 @@ public class DatabaseOperations {
             }
             return messageID;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu danych z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return 0;
         }
     }
@@ -550,8 +499,7 @@ public class DatabaseOperations {
             statement.setString(2, member.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas edytowania ticketa po zamknięciu w bazie danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 
@@ -566,8 +514,7 @@ public class DatabaseOperations {
             }
             return messageID;
         } catch (SQLException e) {
-            System.err.println("Błąd podczas odczytu danych z bazy danych");
-            e.printStackTrace();
+            logError(e);
             return 0;
         }
     }
@@ -579,8 +526,7 @@ public class DatabaseOperations {
             statement.setString(2, member.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Błąd podczas edytowania ticketa po zamknięciu w bazie danych");
-            e.printStackTrace();
+            logError(e);
         }
     }
 }
