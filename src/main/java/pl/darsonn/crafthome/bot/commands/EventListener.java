@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEven
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -23,11 +22,11 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.jetbrains.annotations.NotNull;
 import pl.darsonn.crafthome.bot.DiscordBot;
+import pl.darsonn.crafthome.bot.Utils;
 import pl.darsonn.crafthome.bot.embedMessagesGenerator.EmbedMessageGenerator;
 import pl.darsonn.crafthome.bot.ticketSystem.TicketSystemListener;
 import pl.darsonn.crafthome.bot.countingSystem.CountingSystemListener;
 
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
@@ -47,19 +46,13 @@ public class EventListener extends ListenerAdapter {
         changeCountOfMembers(event.getGuild());
         changeLastJoinedPlayer(event);
 
-        embedMessageGenerator.sendWelcomeMessage(Objects.requireNonNull(event.getGuild().getTextChannelById("1175771786424635412")), member);
+        embedMessageGenerator.sendWelcomeMessage(Objects.requireNonNull(event.getGuild().getTextChannelById(Utils.Basics.getWelcomeChannelID())), member);
         DiscordBot.databaseOperations.insertMemberIntoDatabase(member);
     }
 
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
         changeCountOfMembers(event.getGuild());
-    }
-
-    @Override
-    public void onReady(@NotNull ReadyEvent event) {
-//        TextChannel logsChannel = event.getJDA().getTextChannelById("1176845996739788851");
-//        embedMessageGenerator.sendStartupEmbedMessage(logsChannel);
     }
 
     @Override
@@ -72,7 +65,6 @@ public class EventListener extends ListenerAdapter {
             case "status" -> statusCommand(event);
             case "setusuer" -> setUserCommand(event);
             case "banuser" -> banCommand(event);
-            case "restart" -> restartBotCommand(event);
             case "memberinfo" -> memberInfoCommand(event);
             case "lockdown" -> lockdownCommand(event);
         }
@@ -156,9 +148,10 @@ public class EventListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-        if((event.getChannel().getId().equals("1176229979349073950") ||
-        event.getChannel().getId().equals("1176230022047080448") ||
-        event.getChannel().getId().equals("1176230082742857769")) && !(event.getAuthor().isBot())) {
+        if((event.getChannel().getId().equals(Utils.ApplicationChannels.getAdministrationChannelID()) ||
+                event.getChannel().getId().equals(Utils.ApplicationChannels.getDeveloperChannelID()) ||
+                event.getChannel().getId().equals(Utils.ApplicationChannels.getCreatorChannelID())) &&
+                !(event.getAuthor().isBot())) {
             embedMessageGenerator.sendNewApplicationEmbedMessage(event, event.getMessage().getContentRaw());
             event.getMessage().delete().queue();
         } else if(event.getChannel().getId().equals(CountingSystemListener.countingChannelID) && !event.getAuthor().isBot()) {
@@ -175,7 +168,7 @@ public class EventListener extends ListenerAdapter {
     }
 
     private void changelogCommand(SlashCommandInteractionEvent event) {
-        TextChannel textChannel = Objects.requireNonNull(event.getGuild()).getTextChannelById("1175943559455723581");
+        TextChannel textChannel = Objects.requireNonNull(event.getGuild()).getTextChannelById(Utils.Basics.getChangelogChannelID());
 
         if(event.getMember().getRoles().contains(event.getGuild().getRoleById("1175839371195334796"))) {
             event.getChannel().getHistory().retrievePast(1)
@@ -187,7 +180,7 @@ public class EventListener extends ListenerAdapter {
                                             Button.success("getInformationsChangelog", "Zobacz znaczenie symboli")
                                     )
                                     .queue();
-                            event.reply("Wysłano wiadomość na <#1175943559455723581>!").setEphemeral(true).queue();
+                            event.reply("Wysłano wiadomość na <#" + Utils.Basics.getChangelogChannelID() + ">!").setEphemeral(true).queue();
                         } else {
                             event.reply("Błąd! Nie znaleziono wiadomości do wysłania.").setEphemeral(true).queue();
                         }
@@ -289,7 +282,7 @@ public class EventListener extends ListenerAdapter {
     }
 
     private void statusCommand(SlashCommandInteractionEvent event) {
-        VoiceChannel voiceChannel = event.getJDA().getVoiceChannelById("1175777045561749614");
+        VoiceChannel voiceChannel = event.getJDA().getVoiceChannelById(Utils.StatisticsVoiceChannel.getStatusVoiceChannelID());
         voiceChannel.getManager().setName(event.getOption("status").getAsString()).queue();
 
         event.reply("Pomyślnie zmieniono status na: " + event.getOption("status").getAsString()).setEphemeral(true).queue();
@@ -309,7 +302,7 @@ public class EventListener extends ListenerAdapter {
     }
 
     private void changeCountOfMembers(Guild guild) {
-        VoiceChannel counterChannel = guild.getVoiceChannelById("1175780112965312564");
+        VoiceChannel counterChannel = guild.getVoiceChannelById(Utils.StatisticsVoiceChannel.getMemberCounterVoiceChannelID());
 
         guild.loadMembers().onSuccess(members -> {
             int users = 0;
@@ -322,7 +315,7 @@ public class EventListener extends ListenerAdapter {
     }
 
     private void changeLastJoinedPlayer(GuildMemberJoinEvent event) {
-        VoiceChannel newMemberChannel = event.getGuild().getVoiceChannelById("1186063744107810877");
+        VoiceChannel newMemberChannel = event.getGuild().getVoiceChannelById(Utils.StatisticsVoiceChannel.getNewMemberVoiceChannelID());
 
         newMemberChannel.getManager().setName("\uD83D\uDC4BNowy: " + event.getMember().getEffectiveName()).queue();
     }
@@ -340,22 +333,6 @@ public class EventListener extends ListenerAdapter {
         embedMessageGenerator.sendBanEmbedMessage(event, username, reason, time, odwolanie, event.getUser().getId());
 
         event.reply("Poprawnie wystawiono bana graczowi o nicku: " + username).setEphemeral(true).queue();
-    }
-
-    private void restartBotCommand(SlashCommandInteractionEvent event) {
-        if(!event.getMember().getId().equals("951563322300444742")) {
-            event.reply("Niestety nie jesteś uprawniony do restartowania bota!").setEphemeral(true).queue();
-            return;
-        }
-
-        try {
-            event.reply("Pomyślnie wykonano restart bota!").setEphemeral(true).queue();
-            Process process = Runtime.getRuntime().exec("sudo systemctl restart discordbot.service");
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            event.reply("Niestety restart bota nie powiódł się!").setEphemeral(true).queue();
-            throw new RuntimeException(e);
-        }
     }
 
     private void streamingCommand(UserContextInteractionEvent event) {
@@ -415,6 +392,6 @@ public class EventListener extends ListenerAdapter {
 
         DiscordBot.setIsUnderAttack(true);
         embedMessageGenerator.sendLockdownEmbedMessage(event);
-        event.getGuild().getCategoryById("1175776786127265802").createVoiceChannel("⛔ Lockdown!").queue();
+        event.getGuild().getCategoryById(Utils.StatisticsVoiceChannel.getCategoryID()).createVoiceChannel("⛔ Lockdown!").queue();
     }
 }
