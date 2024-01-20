@@ -17,7 +17,7 @@ public class CountingSystemListener {
     public static String countingChannelID = Utils.Basics.getCountingChannelID();
 //    public static String countingChannelID = "1195704767536705636";
     public static String escapingChatters = "/*";
-    private static final DatabaseOperations databaseOperations = new DatabaseOperations();
+    private static final CountingDatabaseOperations databaseOperations = new CountingDatabaseOperations();
     private static final EmbedMessageGenerator embedMessageGenerator = new EmbedMessageGenerator();
 
     public static void newMessage(MessageReceivedEvent event) {
