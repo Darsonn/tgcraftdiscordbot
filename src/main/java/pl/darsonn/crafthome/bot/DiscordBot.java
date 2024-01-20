@@ -14,6 +14,7 @@ import java.util.EnumSet;
 
 public class DiscordBot {
     public static JDA bot;
+    public static boolean isUnderAttack;
     public static DatabaseOperations databaseOperations;
     public EmbedMessageGenerator embedMessageGenerator;
     public void startBot(String token) {
@@ -26,7 +27,9 @@ public class DiscordBot {
                         GatewayIntent.GUILD_EMOJIS_AND_STICKERS
                 )
                 .setActivity(Activity.playing("TgCraft.pl"))
-                .addEventListeners(new EventListener(), new GiveawaySystemListener())
+                .addEventListeners(
+                        new EventListener(),
+                        new GiveawaySystemListener())
                 .build();
 
         CommandsCreator commandsCreator = new CommandsCreator();
@@ -38,6 +41,8 @@ public class DiscordBot {
         embedMessageGenerator = new EmbedMessageGenerator();
 
         GiveawaySystemListener.checkForActiveGiveaways();
+
+        isUnderAttack = false;
     }
 
     public void stopBot() {
@@ -49,5 +54,13 @@ public class DiscordBot {
 
     public JDA getJDA() {
         return bot;
+    }
+
+    public static boolean getIsUnderAttack() {
+        return isUnderAttack;
+    }
+
+    public static void setIsUnderAttack(boolean isUnderAttack) {
+        DiscordBot.isUnderAttack = isUnderAttack;
     }
 }
