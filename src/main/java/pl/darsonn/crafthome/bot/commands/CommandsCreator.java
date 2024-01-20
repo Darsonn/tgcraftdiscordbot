@@ -92,6 +92,12 @@ public class CommandsCreator {
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MESSAGE_SEND))
         );
 
+        commands.addCommands(
+                Commands.slash("lockdown", "Wprowadź typ lockdown (brak możliwości weryfikacji nowych użytkowników)")
+                        .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
+                        .setGuildOnly(true)
+        );
+
         commands.queue();
     }
 }
