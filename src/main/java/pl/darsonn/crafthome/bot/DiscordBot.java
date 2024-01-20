@@ -6,16 +6,16 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import pl.darsonn.crafthome.bot.commands.CommandsCreator;
 import pl.darsonn.crafthome.bot.commands.EventListener;
-import pl.darsonn.crafthome.bot.database.DatabaseOperations;
 import pl.darsonn.crafthome.bot.embedMessagesGenerator.EmbedMessageGenerator;
 import pl.darsonn.crafthome.bot.giveaways.GiveawaySystemListener;
+import pl.darsonn.crafthome.bot.ticketSystem.TicketsDatabaseOperations;
 
 import java.util.EnumSet;
 
 public class DiscordBot {
     public static JDA bot;
     public static boolean isUnderAttack;
-    public static DatabaseOperations databaseOperations;
+    public static TicketsDatabaseOperations databaseOperations;
     public EmbedMessageGenerator embedMessageGenerator;
     public void startBot(String token) {
         bot = JDABuilder.createLight(token, EnumSet.noneOf(GatewayIntent.class))
@@ -35,7 +35,7 @@ public class DiscordBot {
         CommandsCreator commandsCreator = new CommandsCreator();
         commandsCreator.createCommands(bot);
 
-        databaseOperations = new DatabaseOperations();
+        databaseOperations = new TicketsDatabaseOperations();
         databaseOperations.cleanDatabaseFromClosedTickets();
 
         embedMessageGenerator = new EmbedMessageGenerator();

@@ -13,8 +13,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.FileUpload;
 import pl.darsonn.crafthome.bot.DiscordBot;
-import pl.darsonn.crafthome.bot.database.DatabaseOperations;
 import pl.darsonn.crafthome.bot.countingSystem.CountingSystemListener;
+import pl.darsonn.crafthome.bot.ticketSystem.TicketsDatabaseOperations;
 
 import java.awt.*;
 import java.io.File;
@@ -29,7 +29,7 @@ public class EmbedMessageGenerator {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
     LocalDateTime time = LocalDateTime.now();
     EmbedBuilder embedBuilder = new EmbedBuilder();
-    DatabaseOperations databaseOperation = DiscordBot.databaseOperations;
+    TicketsDatabaseOperations databaseOperation = new TicketsDatabaseOperations();
 
     public void sendRulesEmbedMessage(SlashCommandInteractionEvent event) {
         TextChannel textChannel = event.getGuildChannel().asTextChannel();
@@ -118,7 +118,6 @@ public class EmbedMessageGenerator {
         ticketLogsChannel.sendMessageEmbeds(embedBuilder.build()).queue();
 
         databaseOperation.closeTicket(channelID, member.getId(), closingDate);
-
     }
 
     public void sendWelcomeMessage(TextChannel welcomeChannel, Member member) {
