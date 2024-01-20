@@ -16,6 +16,7 @@ public class GiveawayManager {
         Instant endDate = endTime.atZone(ZoneId.systemDefault()).toInstant();
         Duration duration = Duration.between(Instant.now(), endDate);
         long initialDelayInSeconds = Math.max(0, duration.getSeconds());
+        initialDelayInSeconds = Math.abs(initialDelayInSeconds);
         System.out.println(LocalDateTime.now());
         System.out.println(endDate);
         System.out.println(duration.getSeconds());
