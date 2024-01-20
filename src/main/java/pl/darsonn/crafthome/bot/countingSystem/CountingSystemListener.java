@@ -25,12 +25,12 @@ public class CountingSystemListener {
 
         if(message.startsWith(escapingChatters)) return;
 
-//        if(isSameSenderAsLastMessage(event.getAuthor().getId()) && !event.getMember().getId().equals("951563322300444742")) {
-//            event.getMessage().reply("<@" + event.getAuthor().getId() + ">\nTo nie Twoja kolej!").queue();
-//            event.getMessage().delete().queue();
-//            addReactionsToMessage(event, -1);
-//            return;
-//        }
+        if(isSameSenderAsLastMessage(event.getAuthor().getId())) {
+            event.getMessage().reply("<@" + event.getAuthor().getId() + ">\nTo nie Twoja kolej!").queue();
+            event.getMessage().delete().queue();
+            addReactionsToMessage(event, -1);
+            return;
+        }
 
         int number = isNumeric(message) ?
                 Integer.parseInt(message) :
