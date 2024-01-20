@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import pl.darsonn.crafthome.bot.Utils;
 import pl.darsonn.crafthome.bot.database.DatabaseOperations;
 import pl.darsonn.crafthome.bot.embedMessagesGenerator.EmbedMessageGenerator;
 
@@ -13,7 +14,7 @@ import java.awt.*;
 import java.util.List;
 
 public class CountingSystemListener {
-    public static String countingChannelID = "1195753440446533683";
+    public static String countingChannelID = Utils.Basics.getCountingChannelID();
 //    public static String countingChannelID = "1195704767536705636";
     public static String escapingChatters = "/*";
     private static final DatabaseOperations databaseOperations = new DatabaseOperations();
