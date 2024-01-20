@@ -45,17 +45,6 @@ public class DiscordBot {
         isUnderAttack = false;
     }
 
-    public void stopBot() {
-        embedMessageGenerator.sendStoppingEmbedMessage(bot);
-        databaseOperations.closeConnection();
-
-        bot.shutdown();
-    }
-
-    public JDA getJDA() {
-        return bot;
-    }
-
     public static boolean getIsUnderAttack() {
         return isUnderAttack;
     }
