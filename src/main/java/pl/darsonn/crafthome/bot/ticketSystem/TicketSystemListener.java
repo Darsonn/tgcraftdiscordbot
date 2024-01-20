@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.restaction.ChannelAction;
 import pl.darsonn.crafthome.bot.Utils;
-import pl.darsonn.crafthome.bot.database.DatabaseOperations;
 import pl.darsonn.crafthome.bot.embedMessagesGenerator.EmbedMessageGenerator;
 
 import java.sql.Timestamp;
@@ -16,7 +15,7 @@ import java.util.Objects;
 import java.util.EnumSet;
 
 public class TicketSystemListener extends ListenerAdapter {
-    DatabaseOperations databaseOperations = new DatabaseOperations();
+    TicketsDatabaseOperations databaseOperations = new TicketsDatabaseOperations();
     EmbedMessageGenerator embedMessageGenerator = new EmbedMessageGenerator();
     TicketLogs ticketLogs = new TicketLogs();
 
