@@ -1,7 +1,6 @@
 package pl.darsonn.crafthome.bot.embedMessagesGenerator;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -137,9 +136,6 @@ public class EmbedMessageGenerator {
         embedBuilder.setTimestamp(Instant.now());
 
         welcomeChannel.sendMessageEmbeds(embedBuilder.build()).queue(message -> {
-//            if (member.getGuild().getEmojiById("1187167529970450552") != null){
-//                message.addReaction(member.getGuild().getEmojiById("1187167529970450552")).queue();
-//            }
             message.addReaction(Emoji.fromUnicode("U+1F44B")).queue();
         });
     }
@@ -282,56 +278,6 @@ public class EmbedMessageGenerator {
         event.reply("Utworzono wiadomość").setEphemeral(true).queue();
     }
 
-    public void sendStartupEmbedMessage(TextChannel logsChannel) {
-        embedBuilder.clear();
-
-        embedBuilder.setColor(Color.GREEN);
-
-        embedBuilder.setTitle("Bot został uruchomiony ponownie!");
-        embedBuilder.setDescription("Najczęściej oznacza to dodanie nowych funkcjonalności lub naprawienie błedów :>");
-
-        logsChannel.sendMessageEmbeds(embedBuilder.build()).queue();
-    }
-
-    public void sendStoppingEmbedMessage(JDA jda) {
-        TextChannel logsChannel = jda.getTextChannelById("1176845996739788851");
-
-        embedBuilder.clear();
-
-        embedBuilder.setColor(Color.RED);
-
-        embedBuilder.setTitle("Serwer przechodzi w tryb Offline!");
-        embedBuilder.setDescription("Brak możliwości połączenia się z serwerem");
-
-        logsChannel.sendMessageEmbeds(embedBuilder.build()).queue();
-    }
-
-    public void sendPlayerJoinedMessage(JDA jda, String displayName, String ipAdress) {
-        TextChannel logsChannel = jda.getTextChannelById("1176845996739788851");
-
-        embedBuilder.clear();
-
-        embedBuilder.setColor(Color.CYAN);
-
-        embedBuilder.setTitle(displayName + " dołączył na serwer");
-        embedBuilder.setDescription("IP: " + ipAdress);
-
-        logsChannel.sendMessageEmbeds(embedBuilder.build()).queue();
-    }
-
-    public void sendPlayerLeftMessage(JDA jda, String displayName, String ipAdress) {
-        TextChannel logsChannel = jda.getTextChannelById("1176845996739788851");
-
-        embedBuilder.clear();
-
-        embedBuilder.setColor(Color.BLUE);
-
-        embedBuilder.setTitle(displayName + " opuścił serwer");
-        embedBuilder.setDescription("IP: " + ipAdress);
-
-        logsChannel.sendMessageEmbeds(embedBuilder.build()).queue();
-    }
-
     public void sendNewApplicationEmbedMessage(MessageReceivedEvent event, String message) {
         String type;
         TextChannel applicationChannel = event.getGuild().getTextChannelById("1176257469534711929");
@@ -441,31 +387,6 @@ public class EmbedMessageGenerator {
         databaseOperation.closeApplication(applicantID);
 
         event.reply("Operacja przebiegła pomyślnie :>").setEphemeral(true).queue();
-    }
-
-    public void sendWezwanieMessage(JDA jda, String admin, String wezwany, String channelName, String uid_wezwany) {
-        TextChannel channel = jda.getTextChannelById("1175784899710566410");
-
-        String wezwanyID = databaseOperation.getDiscordIDFromUID(uid_wezwany);
-
-        String idChannel = "1175771970680389683";
-
-        switch(channelName) {
-            case "Pomoc1" -> idChannel = "1175771970680389683";
-            case "Pomoc2" -> idChannel = "1175772057317953637";
-            case "Pomoc3" -> idChannel = "1175772184866734190";
-            case "Sprawdzanko" -> idChannel = "1175784958548246569";
-        }
-
-        embedBuilder.clear();
-
-        embedBuilder.setTitle(wezwany + " - został wezwany");
-        embedBuilder.setColor(Color.RED);
-
-        embedBuilder.setDescription("Gracz został wezwany na kanał <#" + idChannel + "> przez " + admin);
-
-        channel.sendMessage("<@" + wezwanyID + ">").queue();
-        channel.sendMessageEmbeds(embedBuilder.build()).queue();
     }
 
     public void sendAutoRoleEmbedMessage(SlashCommandInteractionEvent event) {
