@@ -26,7 +26,7 @@ public class DiscordBot {
                         GatewayIntent.DIRECT_MESSAGES,
                         GatewayIntent.GUILD_EMOJIS_AND_STICKERS
                 )
-                .setActivity(Activity.playing("TgCraft.pl"))
+                .setActivity(Activity.playing(Utils.Basics.getServerName() + ".pl"))
                 .addEventListeners(
                         new EventListener(),
                         new GiveawaySystemListener())
