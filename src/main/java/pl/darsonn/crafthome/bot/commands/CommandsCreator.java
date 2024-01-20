@@ -68,12 +68,6 @@ public class CommandsCreator {
         );
 
         commands.addCommands(
-                Commands.slash("restart", "Restartuje bota")
-                        .setGuildOnly(false)
-                        .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
-        );
-
-        commands.addCommands(
                 Commands.context(Command.Type.USER, "Ekran")
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.VIEW_AUDIT_LOGS))
                         .setGuildOnly(false)
