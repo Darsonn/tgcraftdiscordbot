@@ -23,14 +23,12 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.jetbrains.annotations.NotNull;
 import pl.darsonn.crafthome.bot.DiscordBot;
-import pl.darsonn.crafthome.bot.database.DatabaseOperations;
 import pl.darsonn.crafthome.bot.embedMessagesGenerator.EmbedMessageGenerator;
 import pl.darsonn.crafthome.bot.ticketSystem.TicketSystemListener;
 import pl.darsonn.crafthome.bot.countingSystem.CountingSystemListener;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -76,6 +74,7 @@ public class EventListener extends ListenerAdapter {
             case "banuser" -> banCommand(event);
             case "restart" -> restartBotCommand(event);
             case "memberinfo" -> memberInfoCommand(event);
+            case "lockdown" -> lockdownCommand(event);
         }
     }
 
@@ -95,6 +94,11 @@ public class EventListener extends ListenerAdapter {
                     "(-) - oznacza usunięcie funkcjonalności\n" +
                     "(/) - oznacza poprawienie/zmianę funkcjonalności").setEphemeral(true).queue();
         } else if(component.getId().equals("verification")) {
+            if(DiscordBot.getIsUnderAttack()) {
+                event.reply("Serwer jest w trybie **lockdown** najprawdopodobniej z tytułu ataku\n" +
+                        "Odczekaj chwilę i spróbuj ponownie").setEphemeral(true).queue();
+                return;
+            }
             Objects.requireNonNull(event.getGuild()).addRoleToMember(Objects.requireNonNull(event.getMember()), Objects.requireNonNull(event.getJDA().getRoleById("1175837018941554728"))).queue();
             event.reply("Pomyślnie zostałeś zweryfikowany!").setEphemeral(true).queue();
         } else if(Objects.requireNonNull(component.getId()).contains("application")) {
@@ -397,5 +401,20 @@ public class EventListener extends ListenerAdapter {
         embedBuilder.addField("Role", roleString.toString(), false);
 
         event.replyEmbeds(embedBuilder.build()).queue();
+    }
+
+    private void lockdownCommand(SlashCommandInteractionEvent event) {
+        if(DiscordBot.getIsUnderAttack()) {
+            event.reply("Tryb **lockdown** został pomyślnie wyłączony!\n" +
+                    "Usuń wiadomość o lockdownie na kanale weryfikacji!").setEphemeral(true).queue();
+            DiscordBot.setIsUnderAttack(false);
+
+            event.getGuild().getVoiceChannelsByName("⛔ Lockdown!" ,true).get(0).delete().queue();
+            return;
+        }
+
+        DiscordBot.setIsUnderAttack(true);
+        embedMessageGenerator.sendLockdownEmbedMessage(event);
+        event.getGuild().getCategoryById("1175776786127265802").createVoiceChannel("⛔ Lockdown!").queue();
     }
 }
