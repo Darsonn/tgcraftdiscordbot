@@ -734,4 +734,19 @@ public class EmbedMessageGenerator {
         event.getChannel().asTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
         event.reply("Pomyślnie wysłano wiadomośc na temat liczenia").setEphemeral(true).queue();
     }
+
+    public void sendLockdownEmbedMessage(SlashCommandInteractionEvent event) {
+        embedBuilder.clear();
+
+        embedBuilder.setTitle("Serwer w trybie Lockdown!");
+        embedBuilder.setColor(Color.RED);
+        embedBuilder.setDescription("Na serwerze został włączony tryb **lockdown**.\n" +
+                "Najprawdopodbniej serwer jest atakowany! Poczekaj na zniknięcie tej wiadomości, " +
+                "aby się zweryfikować.");
+
+        embedBuilder.setFooter("Lockdown by " + event.getMember().getEffectiveName());
+
+        event.getChannel().asTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
+        event.reply("Pomyślnie wprowadzono **lockdown** na serwer!").setEphemeral(true).queue();
+    }
 }
