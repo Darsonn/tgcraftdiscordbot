@@ -1,13 +1,8 @@
 package pl.darsonn.crafthome.bot.database;
 
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import pl.darsonn.crafthome.bot.giveaways.Giveaway;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,8 +42,6 @@ public class DatabaseOperations {
     public void logError(SQLException e) {
         logger.log(Level.WARNING, "Błąd podczas manipulacji danymi w bazie danych", e);
     }
-
-//    public void cleanDatabaseFromClosedTickets() {}
 
     public void createApplication(String applicantID, String type, String messageID) {
         String request = "INSERT INTO `applications`(`ID`, `Type`, `ApplicantID`, `Status`, `MessageID`) VALUES (?,?,?,?,?)";
