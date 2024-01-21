@@ -43,7 +43,7 @@ public class CountingSystemListener {
             return;
         }
 
-        if(isNumberLowerOrSameAsLastNumber(number) || number == -125743) {
+        if(isNumberLowerOrSameAsLastNumber(number) || number == -125743 || message.startsWith("0")) {
             embedMessageGenerator.sendInvalidNumberException(event, !(number == -1));
             updateInDatabase(1, "bot");
             addReactionsToMessage(event, -1);
