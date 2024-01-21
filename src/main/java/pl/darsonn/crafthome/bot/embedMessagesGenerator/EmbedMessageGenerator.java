@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.FileUpload;
-import pl.darsonn.crafthome.bot.DiscordBot;
+import pl.darsonn.crafthome.bot.Utils;
 import pl.darsonn.crafthome.bot.countingSystem.CountingSystemListener;
 import pl.darsonn.crafthome.bot.ticketSystem.TicketsDatabaseOperations;
 
@@ -666,7 +666,8 @@ public class EmbedMessageGenerator {
 
         embedBuilder.setFooter("Lockdown by " + event.getMember().getEffectiveName());
 
-        event.getChannel().asTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
+        event.getGuild().getTextChannelById(Utils.Basics.getVerificationChannelID())
+                .sendMessageEmbeds(embedBuilder.build()).queue();
         event.reply("Pomyślnie wprowadzono **lockdown** na serwer!").setEphemeral(true).queue();
     }
 }
