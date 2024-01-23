@@ -590,12 +590,11 @@ public class EmbedMessageGenerator {
                 ╰✧<@689155071619104805>\s
                 
                 ╭✧**Junior Moderatorzy**\s
-                ╰✧brak\s
+                ╰✧<@785387930998407189>\s
                 
                 ╭✧**Helperzy**\s
                 ┝✧<@558004722137694209>
-                ┝✧<@421023458781036554>
-                ╰✧<@785387930998407189>""", true);
+                ╰✧<@421023458781036554>""", true);
         embedBuilder.addBlankField(true);
         embedBuilder.addField("Zespół Developerski", """
                 ╭✧**Head Developer**\s
