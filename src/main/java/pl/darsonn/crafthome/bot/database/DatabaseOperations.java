@@ -16,7 +16,7 @@ public class DatabaseOperations {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(request, "root", "merkUUry1005");
+            connection = DriverManager.getConnection(request, "root", "");
             logger.log(Level.FINE, "Połączenie z bazą danych jest poprawne");
         } catch (ClassNotFoundException | SQLException ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -28,7 +28,7 @@ public class DatabaseOperations {
         String request = "jdbc:mysql://localhost:3306/crafthomebot?useUnicode=true&characterEncoding=utf8";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(request, "root", "merkUUry1005");
+            connection = DriverManager.getConnection(request, "root", "");
             logger.log(Level.FINE, "Połączenie z bazą danych jest poprawne");
             return connection;
 
